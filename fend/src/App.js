@@ -1,10 +1,32 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import UserPage from './pages/UserPage';
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+import UserPage from "./pages/UserPage";
+import ErrorPage from "./pages/ErrorPage";
+import RequireAuth from "./pages/RequireAuth";
+import Layout from "./pages/Layout";
+import { BrowserRouter as Routes, Route } from 'react-router-dom';
 
+
+//TODO:Configure to use proper accountTypes and ensure it works.
 
 function App() {
-    return (<div><UserPage /></div>
+    return (
+        <Routes>
+            <Route path="/" element={<Layout />}>
+                <Route path="login" element={<LoginPage />} />
+                <Route path="*" element={<ErrorPage />} />
+
+                <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+                    <Route path="admin" element={<AdminPage />} />
+                </Route>
+                <Route element={<RequireAuth allowedRoles={["user"]} />}>
+                    <Route path="register" element={<RegisterPage />} />
+                    <Route path="user" element={<UserPage />} />
+                </Route>
+            </Route>
+        </Routes >
     );
 }
 

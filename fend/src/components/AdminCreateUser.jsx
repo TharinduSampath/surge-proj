@@ -1,7 +1,9 @@
 import React from "react";
 import { Button, Modal, Box, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import axios from "../api/axios";
 
+const REGISTER_URL = "/register"; //Change this according to backend
 const style = {
 	position: "absolute",
 	top: "50%",
@@ -15,8 +17,14 @@ const style = {
 };
 
 function AdminCreateUser() {
+	const [email, setEmail] = useState("");
 	const [modalOpen, setModalOpen] = useState(false);
 	const [err, setErr] = useState(); //If we get an error from server or client.
+
+	const handleEmailChange = (s) => {
+		//Should probably run some validation
+		setEmail(s);
+	};
 
 	const handleOpen = () => {
 		setModalOpen(true);
@@ -25,7 +33,27 @@ function AdminCreateUser() {
 		setModalOpen(false);
 	};
 
-	const handleSubmit = () => {};
+	const handleSubmit = async () => {
+		try {
+			const response = await axios.post(
+				REGISTER_URL,
+				JSON.stringify({ email }),
+				{
+					headers: { "Content-Type": "application/json" },
+					withCredentials: true,
+				}
+			);
+			console.log(JSON.stringify(response));
+		} catch (err) {
+			if (!err?.response) {
+				//Do an error here.
+			} else if (err.response?.status === 409) {
+				//Email already exists.
+			} else {
+				//Registration failed.
+			}
+		}
+	};
 
 	return (
 		<div>
@@ -45,6 +73,8 @@ function AdminCreateUser() {
 						label="Repeat Email"
 						variant="filled"
 						margin="dense"
+						onChange={(e) => handleEmailChange(e.target.value)}
+						value={email}
 						fullWidth
 					/>
 					<Button
