@@ -5,12 +5,12 @@ services:
     image: mongo
     container_name: dend
     ports:
-      - 27017:27017
+      - 27018:27017
     volumes:
       - data:/data
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpass
 
 volumes:
   data: {}
