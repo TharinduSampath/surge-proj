@@ -1,20 +1,10 @@
-version: "3.9"
-
+version: "3.7"
 services:
   mongodb:
+    container_name: mongo-dev
     image: mongo
-    container_name: dend
-    ports:
-      - 27018:27017
-    volumes:
-      - data:/data
     environment:
       - MONGO_INITDB_ROOT_USERNAME=rootuser
       - MONGO_INITDB_ROOT_PASSWORD=rootpass
-
-volumes:
-  data: {}
-
-networks:
-  default:
-    name: mongodb_network
+    ports:
+      - 27018:27017
