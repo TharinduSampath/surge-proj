@@ -40,7 +40,8 @@ public class LoginService {
                 .withExpiresAt(new Date(System.currentTimeMillis() + 100 * 60 * 1000))
                 .withClaim("accountType", user.getAccountType().toString())
                 .sign(algo);
-        //TODO: I need a sensible way to check authentication on API access...
+        //TODO: I need a sensible way to check authentication on API access... I can probably store these in some object for comparison on later requests.
+
         return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
     }
 }

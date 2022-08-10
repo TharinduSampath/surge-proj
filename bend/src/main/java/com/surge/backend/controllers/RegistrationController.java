@@ -23,10 +23,4 @@ public class RegistrationController {
         service.registerNewUser(user);
     }
 
-    @PatchMapping
-    public void configurefirstTimeUser(@RequestBody User user) {
-        service.configureFirstTimeUser(user);
-    }
-
-
 }

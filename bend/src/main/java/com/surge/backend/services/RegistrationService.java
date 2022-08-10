@@ -21,9 +21,6 @@ public class RegistrationService {
     private final UserRepository userRepo;
     private final RegistrationTokenRepository tokenRepo;
 
-    public void configureFirstTimeUser(User user) {
-    }
-
     public void registerNewUser(User user) {
         if (userRepo.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already exists!");
