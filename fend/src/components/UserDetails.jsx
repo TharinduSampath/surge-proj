@@ -1,13 +1,13 @@
 import React from "react";
 import { Container, Button, Modal, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import UserDetailsEdit from "./UserDetailsEdit";
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
 
 const GET_URL = "http://localhost:8080/user/single";
 
 function UserDetails() {
+	const { auth } = useAuth();
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [accountType, setAccountType] = useState("");
@@ -42,22 +42,22 @@ function UserDetails() {
 	});
 
 	return (
-		<div>
+		<Box py={2}>
 			<Typography component="div" variant="h6">
 				<div>
-					<span>{firstName}</span>
+					<span>{firstName} </span>
 					<span>{lastName}</span>
 				</div>
 			</Typography>
-			<Typography component="div" variant="body1">
-				<div>{accountType}</div>
+			<Typography component="div" variant="caption">
+				<div>{id}</div>
 			</Typography>
 			<Typography component="div" variant="body2">
-				<div>{id}</div>
 				<div>{email}</div>
 				<div>{mobile}</div>
+				<div>{accountType}</div>
 			</Typography>
-		</div>
+		</Box>
 	);
 }
 

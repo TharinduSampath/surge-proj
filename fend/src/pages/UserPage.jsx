@@ -8,7 +8,6 @@ function UserPage() {
 	return (
 		<Container>
 			<UserDetails />
-			<CreateNote />
 			<NoteDisplay />
 		</Container>
 	);

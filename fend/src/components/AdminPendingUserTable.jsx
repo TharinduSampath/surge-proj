@@ -6,12 +6,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { TextField, Button, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
+
+const GET_URL = "http://localhost:8080/user";
 
 function AdminPendingUserTable() {
+	const { auth } = useAuth();
 	const [users, setUsers] = useState([]);
 	const [tempSearch, setTempSearch] = useState(""); //Temporarily store search text.
 	const [search, setSearch] = useState(""); //Actually update search
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState(0);
 	const [totalPages, setTotalPages] = useState(10);
 
 	useEffect(() => {
@@ -21,14 +26,13 @@ function AdminPendingUserTable() {
 				const response = await axios.get(GET_URL, {
 					params: {
 						status: "FALSE",
-						email: email,
 						search: search,
 						page: page,
 					},
 				});
 				setUsers(response?.data?.content);
 				setTotalPages(response?.data?.totalPages);
-				console.log("This data was fetched", notes, totalPages);
+				console.log("This data was fetched", users, totalPages);
 				//TODO: Add Loading indicators
 			} catch (err) {
 				//TODO: Handle errors.
@@ -51,7 +55,7 @@ function AdminPendingUserTable() {
 		console.log(page);
 	};
 	const handlePrevPage = () => {
-		if (page - 1 > 1) setPage(page - 1);
+		if (page - 1 > -1) setPage(page - 1);
 		console.log(page);
 	};
 
@@ -97,7 +101,7 @@ function AdminPendingUserTable() {
 								<TableCell component="th" scope="row">
 									{user.email}
 								</TableCell>
-								<TableCell align="right">{user.tempPass}</TableCell>
+								<TableCell align="right">{user.password}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

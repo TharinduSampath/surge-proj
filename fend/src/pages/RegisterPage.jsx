@@ -1,11 +1,21 @@
+import { Box } from "@mui/material";
 import React from "react";
 import RegisterForm from "../components/RegisterForm";
 
 function RegisterPage() {
 	return (
-		<div>
+		<Box
+			sx={{
+				mx: "auto",
+				width: 600,
+				position: "absolute",
+				top: "50%",
+				left: "50%",
+				transform: "translate(-50%, -50%)",
+			}}
+		>
 			<RegisterForm />
-		</div>
+		</Box>
 	);
 }
 

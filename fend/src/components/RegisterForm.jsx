@@ -1,7 +1,7 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-	Container,
+	Box,
 	Paper,
 	Typography,
 	TextField,
@@ -23,6 +23,8 @@ import axios from "../api/axios";
 
 function RegisterForm() {
 	const { auth, setAuth } = useAuth();
+	const navigate = useNavigate();
+
 	const [email, setEmail] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -49,7 +51,7 @@ function RegisterForm() {
 	const REGEX_PASS =
 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 	const GET_URL = "http://localhost:8080/user/single";
-	const PATCH_URL = "http://localhost:8080/register/firstTime";
+	const PATCH_URL = "http://localhost:8080/register/firsttime";
 
 	useEffect(() => {
 		async function fetchData() {
@@ -65,6 +67,7 @@ function RegisterForm() {
 				});
 				setEmail(response?.data?.email);
 				setOldPassword(response?.data?.password);
+				console.log("This data was fetched", email, oldPassword);
 				//TODO: Loading Indicators.
 			} catch (err) {
 				//TODO: Handle errors.
@@ -139,16 +142,20 @@ function RegisterForm() {
 	//TODO: Cleanup and Finish Register layout
 
 	return (
-		<Paper sx={{ p: 3, width: 600 }}>
+		<Paper sx={{ p: 3 }}>
 			<Typography mb={1} component="div" variant="h6">
 				Registration Form
 			</Typography>
 			<TextField
+				value={email}
 				label="Email"
 				variant="filled"
 				margin="dense"
 				fullWidth
 				disabled
+				InputLabelProps={{
+					shrink: true,
+				}}
 			/>
 			<Grid container spacing={2}>
 				<Grid item xs={6}>

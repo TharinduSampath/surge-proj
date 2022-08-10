@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/register")
+@CrossOrigin
 public class RegistrationController {
 
     private final RegistrationService service;
@@ -21,6 +22,11 @@ public class RegistrationController {
     @PostMapping
     public void registerNewUser(@RequestBody User user) {
         service.registerNewUser(user);
+    }
+
+    @PatchMapping("/firsttime")
+    public void updateFirstTimeUser(@RequestBody User user){
+        service.updateFirstTimeUser(user);
     }
 
 }

@@ -7,7 +7,6 @@ import com.surge.backend.repos.UserRepository;
 import com.surge.backend.utils.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j @AllArgsConstructor @Service
 public class RegistrationService {
 
-    private final BCryptPasswordEncoder encoder;
     private final UserRepository userRepo;
     private final RegistrationTokenRepository tokenRepo;
 
@@ -26,7 +24,7 @@ public class RegistrationService {
             throw new IllegalStateException("Email already exists!");
         }
 
-        String pass = String.valueOf(ThreadLocalRandom.current().nextInt(0, 999999 + 1));
+        String pass = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 999999 + 1));
         user.setPassword(pass); //Always results in invalid password if using encoder?
         user.setAccountType(AccountType.USER); //Doesn't automatically get set for some reason?
 
@@ -57,5 +55,14 @@ public class RegistrationService {
 
         userRepo.save(user);
         tokenRepo.save(regToken);
+    }
+
+    public void updateFirstTimeUser(User user) {
+        User oldUser = userRepo.findByEmail(user.getEmail()).orElseThrow(() -> new IllegalStateException("User doesn't exist!"));
+        oldUser.setFirstName(user.getFirstName());
+        oldUser.setLastName(user.getFirstName());
+        oldUser.setMobile(user.getMobile());
+        oldUser.setDateOfBirth(user.getDateOfBirth());
+        userRepo.save(oldUser);
     }
 }

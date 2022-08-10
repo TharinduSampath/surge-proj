@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Note from "./Note";
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
+import CreateNote from "./CreateNote";
 
 const GET_URL = "http://localhost:8080/note";
 
@@ -66,7 +67,7 @@ function NoteDisplay() {
 		<div>
 			<div>
 				<Grid container spacing={1}>
-					<Grid item xs={8}>
+					<Grid item xs={4}>
 						<TextField
 							label="Search Title"
 							variant="outlined"
@@ -85,6 +86,9 @@ function NoteDisplay() {
 						>
 							Search
 						</Button>
+					</Grid>
+					<Grid item xs={4}>
+						<CreateNote onUpdate={handleUpdate} />
 					</Grid>
 				</Grid>
 			</div>

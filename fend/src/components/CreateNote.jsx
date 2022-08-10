@@ -21,7 +21,7 @@ const style = {
 
 const SAVE_URL = "http://localhost:8080/note";
 
-function CreateNote() {
+function CreateNote({ onUpdate }) {
 	const { auth } = useAuth();
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -60,6 +60,7 @@ function CreateNote() {
 					},
 				}
 			);
+			onUpdate();
 			//TODO: Loading indicator
 			//TODO: Update state of note display.
 		} catch (err) {
@@ -68,8 +69,15 @@ function CreateNote() {
 	};
 
 	return (
-		<div>
-			<Button onClick={handleShowModal}>Create Note</Button>
+		<React.Fragment>
+			<Button
+				color="primary"
+				variant="contained"
+				size="medium"
+				onClick={handleShowModal}
+			>
+				Create Note
+			</Button>
 			<Modal open={modalOpen} onClose={handleShowModal}>
 				<Box sx={style}>
 					<Paper sx={{ p: 3 }}>
@@ -110,7 +118,7 @@ function CreateNote() {
 					</Paper>
 				</Box>
 			</Modal>
-		</div>
+		</React.Fragment>
 	);
 }
 

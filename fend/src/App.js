@@ -5,7 +5,6 @@ import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
 import ErrorPage from "./pages/ErrorPage";
 import RequireAuth from "./pages/RequireAuth";
-import UnauthorizedPage from './pages/UnauthorizedPage';
 import Layout from "./pages/Layout";
 import { Routes, Route } from 'react-router-dom';
 
@@ -20,19 +19,15 @@ function App() {
             <Route path="/" element={<Layout />}>
                 <Route path="login" element={<LoginPage />} />
                 <Route path="*" element={<ErrorPage />} />
-                <Route path="admin" element={<AdminPage />} />
-                <Route path="user" element={<UserPage />} />
-                <Route path="unauthorized" element={<UnauthorizedPage />} />
-                <Route path="register" element={<RegisterPage />} />
 
                 <Route element={<RequireAuth accountTypes={[ADMIN]} />}>
-
+                    <Route path="admin" element={<AdminPage />} />
                 </Route>
                 <Route element={<RequireAuth accountTypes={[USER]} />}>
-
+                    <Route path="user" element={<UserPage />} />
                 </Route>
                 <Route element={<RequireAuth accountTypes={[USER, ADMIN]} />}>
-
+                    <Route path="register" element={<RegisterPage />} />
                 </Route>
             </Route>
         </Routes >

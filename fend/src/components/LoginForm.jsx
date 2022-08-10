@@ -51,12 +51,15 @@ function LoginForm() {
 
 			const accessToken = response?.data?.accessToken;
 			const refreshToken = response?.data?.refreshToken;
+			const isNewUser = response?.data?.isNewUser === "true";
 			const decodedToken = jwt_decode(accessToken);
 			const accountType = decodedToken?.accountType;
-			console.log(decodedToken);
+			console.log(decodedToken, isNewUser);
 			setAuth({ email, accountType, accessToken, refreshToken }); //Is it alright to store pwd here?
 
-			if (decodedToken?.accountType === "USER") {
+			if (isNewUser == true) {
+				navigate("/register");
+			} else if (decodedToken?.accountType === "USER") {
 				navigate("/user");
 			} else if (decodedToken?.accountType === "ADMIN") {
 				navigate("/admin");
