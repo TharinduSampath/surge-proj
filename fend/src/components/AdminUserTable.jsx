@@ -7,6 +7,8 @@ import TableRow from "@mui/material/TableRow";
 import { TextField, Button, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 
+const GET_URL = "http://localhost:8080/user";
+
 function AdminUserTable() {
 	const [users, setUsers] = useState([]);
 	const [tempSearch, setTempSearch] = useState(""); //Temporarily store search text.
@@ -15,7 +17,26 @@ function AdminUserTable() {
 	const [totalPages, setTotalPages] = useState(10);
 
 	useEffect(() => {
-		//TODO: Api Call here
+		async function fetchData() {
+			try {
+				const email = auth?.email;
+				const response = await axios.get(GET_URL, {
+					params: {
+						status: "TRUE",
+						email: email,
+						search: search,
+						page: page,
+					},
+				});
+				setUsers(response?.data?.content);
+				setTotalPages(response?.data?.totalPages);
+				console.log("This data was fetched", notes, totalPages);
+				//TODO: Add Loading indicators
+			} catch (err) {
+				//TODO: Handle errors.
+			}
+		}
+		fetchData();
 	}, [page, search]);
 
 	const handleSearchText = (string) => {

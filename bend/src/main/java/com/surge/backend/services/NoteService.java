@@ -43,11 +43,19 @@ public class NoteService {
         repo.save(note);
     }
 
-    public void deleteNote(String id) {
+    public void deleteNote(String email, String id) {
+        Note note = repo.findById(id).orElseThrow(() -> new IllegalStateException("No such note!"));
+        if (!note.getUserEmail().equals(email)) {
+            throw new IllegalStateException("That note is not yours to delete!");
+        }
         repo.deleteById(id);
     }
 
     public void editNote(Note note) {
-        repo.save(note);
+        Note newNote = repo.findById(note.getId()).orElseThrow(() -> new IllegalStateException("No such note!"));
+        newNote.setTitle(note.getTitle());
+        newNote.setDescription(note.getDescription());
+        log.info("Editing a note {} ", newNote);
+        repo.save(newNote);
     }
 }

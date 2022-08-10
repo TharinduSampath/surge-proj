@@ -15,6 +15,7 @@ public class NoteController {
 
     private final NoteService service;
 
+    @CrossOrigin
     @PatchMapping
     public void editNote(@RequestBody Note note) {
         service.editNote(note);
@@ -25,9 +26,10 @@ public class NoteController {
         service.saveNote(note);
     }
 
+    @CrossOrigin
     @DeleteMapping
-    public void deleteNote(@RequestParam String id) {
-        service.deleteNote(id);
+    public void deleteNote(@RequestParam String email, @RequestParam String id) {
+        service.deleteNote(email, id);
     }
 
     @GetMapping

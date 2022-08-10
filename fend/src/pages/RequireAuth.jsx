@@ -1,19 +1,22 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
-function RequireAuth(allowedRoles) {
+function RequireAuth({ accountTypes }) {
 	const { auth } = useAuth();
 	const location = useLocation();
 
-	//TODO: Change so that it reads roles from the JWT ?
-	//TODO: Configure to single role.
+	const accountType = auth?.accountType;
+	const hasAccessToken = auth?.accessToken != null ? true : false;
 
-	return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
+	return accountTypes.includes(accountType) ? (
 		<Outlet />
+	) : hasAccessToken ? (
+		<Navigate to="/unauthorized" state={{ from: location }} replace />
 	) : (
 		<Navigate to="/login" state={{ from: location }} replace />
-		//All unathorized and etc. end up here right now. Configure later.
 	);
+
+	//TODO: All unathorized and etc. end up here right now. Configure later.
 }
 
 export default RequireAuth;

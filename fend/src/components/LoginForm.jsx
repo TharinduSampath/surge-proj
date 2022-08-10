@@ -22,7 +22,7 @@ import jwt_decode from "jwt-decode";
 const LOGIN_URL = "http://localhost:8080/login"; //Change according to backend.
 
 function LoginForm() {
-	const { setAuth } = useAuth(); //When we receive authorization. Put that in the global context.
+	const { auth, setAuth } = useAuth(); //When we receive authorization. Put that in the global context.
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -36,22 +36,31 @@ function LoginForm() {
 	const handleSubmit = async (e) => {
 		//TODO: Api Call here
 		e.preventDefault();
-		console.log("Submit button pressed!");
 		try {
 			const response = await axios.post(
 				LOGIN_URL,
 				JSON.stringify({ email, password }),
 				{
-					headers: { "Content-Type": "application/json" },
-					withCredentials: true,
+					headers: {
+						"Content-Type": "application/json",
+					},
 				}
 			);
-			console.log(JSON.stringify(response));
+
+			//TODO: Loading indicator until response is received.
+
 			const accessToken = response?.data?.accessToken;
+			const refreshToken = response?.data?.refreshToken;
 			const decodedToken = jwt_decode(accessToken);
+			const accountType = decodedToken?.accountType;
 			console.log(decodedToken);
-			//setAuth({ email, password, accountType, accessToken }); //Is it alright to store pwd here?
-			//navigate(from, { replace: true }); //TODO: Redirect according to accountType and accountState.
+			setAuth({ email, accountType, accessToken, refreshToken }); //Is it alright to store pwd here?
+
+			if (decodedToken?.accountType === "USER") {
+				navigate("/user");
+			} else if (decodedToken?.accountType === "ADMIN") {
+				navigate("/admin");
+			}
 		} catch (err) {
 			if (!err?.response) {
 				//Do an error here.
@@ -74,7 +83,7 @@ function LoginForm() {
 	};
 
 	return (
-		<Paper sx={{ p: 3, width: 260 }}>
+		<Paper sx={{ p: 3 }}>
 			<Typography mb={1} component="div" variant="h6">
 				Login
 			</Typography>

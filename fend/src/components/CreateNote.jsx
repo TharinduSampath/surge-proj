@@ -8,6 +8,8 @@ import {
 	Paper,
 } from "@mui/material";
 import { useState } from "react";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
 
 const style = {
 	position: "absolute",
@@ -17,27 +19,58 @@ const style = {
 	width: 400,
 };
 
-const SAVE_URL = "";
+const SAVE_URL = "http://localhost:8080/note";
 
 function CreateNote() {
+	const { auth } = useAuth();
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+
 	const [modalOpen, setModalOpen] = useState(false);
 	const [err, setErr] = useState(); //If we get an error from server or client.
 
-	const handleOpen = () => {
-		setModalOpen(true);
-	};
-	const handleClose = () => {
-		setModalOpen(false);
+	const handleShowModal = () => {
+		setTitle("");
+		setDescription("");
+		setModalOpen(!modalOpen);
 	};
 
-	const handleSubmit = () => {
-		//TODO: Api Call here.
+	const handleTitleChange = (e) => {
+		setTitle(e.target.value);
+	};
+
+	const handleDescriptionChange = (e) => {
+		setDescription(e.target.value);
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const email = auth?.email;
+			console.log(
+				"Submitting a note",
+				JSON.stringify({ userEmail: email, title, description })
+			);
+			const response = await axios.post(
+				SAVE_URL,
+				JSON.stringify({ userEmail: email, title, description }),
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			//TODO: Loading indicator
+			//TODO: Update state of note display.
+		} catch (err) {
+			//TODO: Error handling here.
+		}
 	};
 
 	return (
 		<div>
-			<Button onClick={handleOpen}>Create Note</Button>
-			<Modal open={modalOpen} onClose={handleClose}>
+			<Button onClick={handleShowModal}>Create Note</Button>
+			<Modal open={modalOpen} onClose={handleShowModal}>
 				<Box sx={style}>
 					<Paper sx={{ p: 3 }}>
 						<Typography mb={1} component="div" variant="h6">
@@ -51,12 +84,16 @@ function CreateNote() {
 							label="Title"
 							variant="filled"
 							margin="dense"
+							onChange={handleTitleChange}
+							value={title}
 							fullWidth
 						/>
 						<TextField
 							label="Type your note here..."
 							variant="filled"
 							margin="dense"
+							onChange={handleDescriptionChange}
+							value={description}
 							fullWidth
 							multiline
 							rows={4}

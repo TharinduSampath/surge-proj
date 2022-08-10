@@ -43,7 +43,6 @@ function AdminCreateUser() {
 				JSON.stringify({ email }),
 				{
 					headers: { "Content-Type": "application/json" },
-					withCredentials: true,
 				}
 			);
 			console.log(JSON.stringify(response));

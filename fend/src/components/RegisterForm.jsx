@@ -17,8 +17,12 @@ import {
 	Popper,
 } from "@mui/material";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
 
 function RegisterForm() {
+	const { auth, setAuth } = useAuth();
 	const [email, setEmail] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -44,9 +48,59 @@ function RegisterForm() {
 	const REGEX_MOBILE = /^(\+\d{1,3}[- ]?)?\d{10}$/;
 	const REGEX_PASS =
 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+	const GET_URL = "http://localhost:8080/user/single";
+	const PATCH_URL = "http://localhost:8080/register/firstTime";
 
-	const handleSubmit = () => {
-		//TODO: Api Call here
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const email = auth?.email;
+				const response = await axios.get(GET_URL, {
+					headers: {
+						"Content-Type": "application/json",
+					},
+					params: {
+						email: email,
+					},
+				});
+				setEmail(response?.data?.email);
+				setOldPassword(response?.data?.password);
+				//TODO: Loading Indicators.
+			} catch (err) {
+				//TODO: Handle errors.
+			}
+		}
+		fetchData();
+	}, []);
+
+	const handleSubmit = async () => {
+		//TODO: Check all fields
+		if (true) {
+			const email = auth?.email;
+			try {
+				const response = await axios.patch(
+					PATCH_URL,
+					{
+						email: email,
+						firstName: firstName,
+						lastName: lastName,
+						mobile: mobile,
+						dateOfBirth: dateOfBirth,
+						password: password,
+					},
+					{
+						header: {
+							"Content-Type": "application/json",
+							"Access-Control-Allow-Origin": "*",
+						},
+					}
+				);
+				setAuth(null);
+				navigate("/login");
+			} catch (err) {
+				//TODO: Error handling
+			}
+		}
 	};
 
 	//Each of these functions check validity. Update error status. Then update state.

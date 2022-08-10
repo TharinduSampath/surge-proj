@@ -12,6 +12,8 @@ import {
 import React from "react";
 import { useState, useEffect } from "react";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
 
 const style = {
 	position: "absolute",
@@ -21,28 +23,29 @@ const style = {
 	width: 400,
 };
 
-const EDIT_URL = "";
-const DELETE_URL = "";
+const NOTE_URL = "http://localhost:8080/note";
 
-function Note() {
+function Note({ note, onUpdate }) {
 	let id;
+	const { auth } = useAuth();
 	const [title, setTitle] = useState("");
-	const [desc, setDesc] = useState("");
+	const [description, setDescription] = useState("");
 
 	const [tempTitle, setTempTitle] = useState("");
-	const [tempDesc, setTempDesc] = useState("");
+	const [tempDescription, setTempDescription] = useState("");
 
 	const [editModalOpen, setEditModalOpen] = useState(false);
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
 	useEffect(() => {
-		setTitle("Default");
-		setDesc("This is a description");
+		id = note?.id;
+		setTitle(note?.title);
+		setDescription(note?.description);
 	});
 
 	const handleShowEditModal = () => {
 		setTempTitle(title);
-		setTempDesc(desc);
+		setTempDescription(description);
 		setEditModalOpen(!editModalOpen);
 	};
 	const handleShowDeleteModal = () => {
@@ -54,15 +57,63 @@ function Note() {
 	};
 
 	const handleEditDescChange = (e) => {
-		setTempDesc(e.target.value);
+		setTempDescription(e.target.value);
 	};
 
-	const handleEditSubmit = () => {
-		//TODO: Axios API call.
+	const handleEditSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const email = auth?.email;
+			console.log(
+				"Editing a note",
+				JSON.stringify({ id, userEmail: email, tempTitle, tempDescription })
+			);
+			const response = await axios.patch(
+				NOTE_URL,
+				JSON.stringify({
+					id,
+					userEmail: email,
+					title: tempTitle,
+					description: tempDescription,
+				}),
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				}
+			);
+			onUpdate();
+			handleShowEditModal();
+			//TODO: Loading indicator
+			//TODO: Update state of note display.
+		} catch (err) {
+			//TODO: Error handling here.
+		}
 	};
 
-	const handleDeleteSubmit = () => {
-		//TODO: Axios API Call.
+	const handleDeleteSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const email = auth?.email;
+			console.log("Deleting a note");
+			const response = await axios.delete(NOTE_URL, {
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+				params: {
+					email: email,
+					id,
+				},
+			});
+			onUpdate();
+			handleShowDeleteModal();
+			//TODO: Loading indicator
+			//TODO: Update state of note display.
+		} catch (err) {
+			//TODO: Error handling here.
+		}
 	};
 
 	return (
@@ -88,7 +139,7 @@ function Note() {
 				</Box>
 				<Divider />
 				<Typography variant="body1" my={1}>
-					{desc}
+					{description}
 				</Typography>
 			</Paper>
 			<Modal open={editModalOpen} onClose={handleShowEditModal}>
@@ -116,7 +167,7 @@ function Note() {
 							variant="filled"
 							margin="dense"
 							onChange={(e) => handleEditDescChange(e)}
-							value={tempDesc}
+							value={tempDescription}
 							fullWidth
 							multiline
 							rows={4}

@@ -2,9 +2,12 @@ import React from "react";
 import { Container, Button, Modal, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import UserDetailsEdit from "./UserDetailsEdit";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
+
+const GET_URL = "http://localhost:8080/user/single";
 
 function UserDetails() {
-	
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [accountType, setAccountType] = useState("");
@@ -13,10 +16,30 @@ function UserDetails() {
 	const [mobile, setMobile] = useState("");
 
 	useEffect(() => {
-		//TODO: Make API Call Here.
-	}, [firstName, lastName, id, email, mobile]);
-
-	
+		async function fetchData() {
+			try {
+				const email = auth?.email;
+				const response = await axios.get(GET_URL, {
+					headers: {
+						"Content-Type": "application/json",
+					},
+					params: {
+						email: email,
+					},
+				});
+				setEmail(response?.data?.email);
+				setFirstName(response?.data?.email);
+				setLastName(response?.data.lastName);
+				setAccountType(response?.data?.accountType);
+				setId(response?.data?.id);
+				setMobile(response?.data?.mobile);
+				//TODO: Loading Indicators.
+			} catch (err) {
+				//TODO: Handle errors.
+			}
+		}
+		fetchData();
+	});
 
 	return (
 		<div>
@@ -34,8 +57,6 @@ function UserDetails() {
 				<div>{email}</div>
 				<div>{mobile}</div>
 			</Typography>
-
-			<UserDetailsEdit />
 		</div>
 	);
 }

@@ -20,6 +20,7 @@ public class LoginService {
     private final UserRepository userRepo;
 
     public Map<String, String> login(LoginUser loginUser) {
+        log.info("Handling login request by {}", loginUser.getEmail());
         User user = userRepo.findByEmail(loginUser.getEmail()).orElseThrow(() -> new IllegalStateException("Invalid Email!"));
         if (!loginUser.getPassword().equals(user.getPassword())) {
             log.error("Password disparity! {} , {}", loginUser.getPassword(), user.getPassword());
@@ -40,8 +41,9 @@ public class LoginService {
                 .withExpiresAt(new Date(System.currentTimeMillis() + 100 * 60 * 1000))
                 .withClaim("accountType", user.getAccountType().toString())
                 .sign(algo);
+        String isNewUser = user.getFirstName() == null || user.getFirstName().isBlank() ? "true" : "false";
         //TODO: I need a sensible way to check authentication on API access... I can probably store these in some object for comparison on later requests.
 
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        return Map.of("accessToken", accessToken, "refreshToken", refreshToken, "isNewUser", isNewUser);
     }
 }

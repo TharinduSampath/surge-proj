@@ -1,21 +1,50 @@
 import { TextField, Button, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import Note from "./Note";
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
+
+const GET_URL = "http://localhost:8080/note";
 
 function NoteDisplay() {
+	const { auth } = useAuth();
 	const [notes, setNotes] = useState([]);
 	const [tempSearch, setTempSearch] = useState(""); //Temporarily store search text.
 	const [search, setSearch] = useState(""); //Actually update search
-	const [page, setPage] = useState(1);
-	const [totalPages, setTotalPages] = useState(10);
+	const [isUpdated, setIsUpdated] = useState(false);
+
+	const [page, setPage] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+
+	const handleUpdate = () => {
+		setIsUpdated(!isUpdated);
+	};
 
 	useEffect(() => {
-		//TODO: Api Call here
-	}, [page, search]);
+		async function fetchData() {
+			try {
+				const email = auth?.email;
+				const response = await axios.get(GET_URL, {
+					params: {
+						email: email,
+						search: search,
+						page: page,
+					},
+				});
+				setNotes(response?.data?.content);
+				setTotalPages(response?.data?.totalPages);
+				console.log("This data was fetched", notes, totalPages);
+				setIsUpdated(true);
+			} catch (err) {
+				//TODO: Handle errors.
+			}
+		}
+		fetchData();
+	}, [page, search, isUpdated]);
 
-	const handleSearchText = (string) => {
-		console.log(string);
-		setTempSearch(string);
+	const handleSearchText = (e) => {
+		console.log(e.target.value);
+		setTempSearch(e.target.value);
 	};
 
 	const handleSearchConfirm = (string) => {
@@ -27,7 +56,7 @@ function NoteDisplay() {
 		console.log(page);
 	};
 	const handlePrevPage = () => {
-		if (page - 1 > 1) setPage(page - 1);
+		if (page - 1 > -1) setPage(page - 1);
 		console.log(page);
 	};
 
@@ -43,8 +72,8 @@ function NoteDisplay() {
 							variant="outlined"
 							fullWidth
 							size="small"
-							onChange={(e) => handleSearchText(e.target.value)}
-							value={search}
+							onChange={handleSearchText}
+							value={tempSearch}
 						/>
 					</Grid>
 					<Grid item xs={4}>
@@ -61,15 +90,11 @@ function NoteDisplay() {
 			</div>
 			<div>
 				<Grid container spacing={2} mt={1}>
-					<Grid item xs={4}>
-						<Note />
-					</Grid>
-					<Grid item xs={4}>
-						<Note />
-					</Grid>
-					<Grid item xs={4}>
-						<Note />
-					</Grid>
+					{notes.map((note) => (
+						<Grid item xs={4}>
+							<Note note={note} onUpdate={handleUpdate} />
+						</Grid>
+					))}
 				</Grid>
 			</div>
 			<div>
@@ -80,6 +105,7 @@ function NoteDisplay() {
 							variant="contained"
 							onClick={handlePrevPage}
 							size="medium"
+							disabled={page - 1 > -1 ? false : true}
 						>
 							Prev
 						</Button>
@@ -90,6 +116,7 @@ function NoteDisplay() {
 							variant="contained"
 							onClick={handleNextPage}
 							size="medium"
+							disabled={page + 1 < totalPages ? false : true}
 						>
 							Next
 						</Button>

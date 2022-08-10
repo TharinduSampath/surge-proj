@@ -15,7 +15,26 @@ function AdminPendingUserTable() {
 	const [totalPages, setTotalPages] = useState(10);
 
 	useEffect(() => {
-		//TODO: Api Call here
+		async function fetchData() {
+			try {
+				const email = auth?.email;
+				const response = await axios.get(GET_URL, {
+					params: {
+						status: "FALSE",
+						email: email,
+						search: search,
+						page: page,
+					},
+				});
+				setUsers(response?.data?.content);
+				setTotalPages(response?.data?.totalPages);
+				console.log("This data was fetched", notes, totalPages);
+				//TODO: Add Loading indicators
+			} catch (err) {
+				//TODO: Handle errors.
+			}
+		}
+		fetchData();
 	}, [page, search]);
 
 	const handleSearchText = (string) => {
