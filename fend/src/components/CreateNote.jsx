@@ -1,5 +1,12 @@
 import React from "react";
-import { Button, Modal, Box, TextField, Typography } from "@mui/material";
+import {
+	Button,
+	Modal,
+	Box,
+	TextField,
+	Typography,
+	Paper,
+} from "@mui/material";
 import { useState } from "react";
 
 const style = {
@@ -8,11 +15,9 @@ const style = {
 	left: "50%",
 	transform: "translate(-50%, -50%)",
 	width: 400,
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: 24,
-	p: 4,
 };
+
+const SAVE_URL = "";
 
 function CreateNote() {
 	const [modalOpen, setModalOpen] = useState(false);
@@ -34,31 +39,38 @@ function CreateNote() {
 			<Button onClick={handleOpen}>Create Note</Button>
 			<Modal open={modalOpen} onClose={handleClose}>
 				<Box sx={style}>
-					<Typography mb={1} component="div" variant="h6">
-						Create Note
-					</Typography>
-					<Typography mb={1} component="div" variant="body2">
-						Create a note here to keep track of something you might forget. It
-						will be displayed below!
-					</Typography>
-					<TextField label="Title" variant="filled" margin="dense" fullWidth />
-					<TextField
-						label="Type your note here..."
-						variant="filled"
-						margin="dense"
-						fullWidth
-						multiline
-						rows={4}
-					/>
-					<Button
-						sx={{ mt: 1 }}
-						color="primary"
-						variant="contained"
-						onClick={handleSubmit}
-						size="large"
-					>
-						Post Note
-					</Button>
+					<Paper sx={{ p: 3 }}>
+						<Typography mb={1} component="div" variant="h6">
+							Create Note
+						</Typography>
+						<Typography mb={1} component="div" variant="body2">
+							Create a note here to keep track of something you might forget. It
+							will be displayed below!
+						</Typography>
+						<TextField
+							label="Title"
+							variant="filled"
+							margin="dense"
+							fullWidth
+						/>
+						<TextField
+							label="Type your note here..."
+							variant="filled"
+							margin="dense"
+							fullWidth
+							multiline
+							rows={4}
+						/>
+						<Button
+							sx={{ mt: 1 }}
+							color="primary"
+							variant="contained"
+							onClick={handleSubmit}
+							size="large"
+						>
+							Post Note
+						</Button>
+					</Paper>
 				</Box>
 			</Modal>
 		</div>

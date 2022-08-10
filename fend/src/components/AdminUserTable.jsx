@@ -48,6 +48,7 @@ function AdminUserTable() {
 							size="small"
 							onChange={(e) => handleSearchText(e.target.value)}
 							value={search}
+							autoComplete="new-password"
 						/>
 					</Grid>
 					<Grid item xs={4}>

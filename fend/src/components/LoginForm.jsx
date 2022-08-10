@@ -17,8 +17,9 @@ import {
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axios from "../api/axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
-const LOGIN_URL = "/auth"; //Change according to backend.
+const LOGIN_URL = "http://localhost:8080/login"; //Change according to backend.
 
 function LoginForm() {
 	const { setAuth } = useAuth(); //When we receive authorization. Put that in the global context.
@@ -35,6 +36,7 @@ function LoginForm() {
 	const handleSubmit = async (e) => {
 		//TODO: Api Call here
 		e.preventDefault();
+		console.log("Submit button pressed!");
 		try {
 			const response = await axios.post(
 				LOGIN_URL,
@@ -46,9 +48,10 @@ function LoginForm() {
 			);
 			console.log(JSON.stringify(response));
 			const accessToken = response?.data?.accessToken;
-			const accountType = response?.data?.accountType;
-			setAuth({ email, password, accountType, accessToken }); //Is it alright to store pwd here?
-			navigate(from, { replace: true }); //TODO: Redirect according to accountType and accountState.
+			const decodedToken = jwt_decode(accessToken);
+			console.log(decodedToken);
+			//setAuth({ email, password, accountType, accessToken }); //Is it alright to store pwd here?
+			//navigate(from, { replace: true }); //TODO: Redirect according to accountType and accountState.
 		} catch (err) {
 			if (!err?.response) {
 				//Do an error here.
@@ -71,54 +74,52 @@ function LoginForm() {
 	};
 
 	return (
-		<Container>
-			<Paper sx={{ p: 3, width: 260 }}>
-				<Typography mb={1} component="div" variant="h6">
-					Login
-				</Typography>
-				<TextField
-					label="Email"
-					variant="filled"
-					margin="dense"
-					fullWidth
-					onChange={(e) => handleEmailChange(e.target.value)}
-					value={email}
+		<Paper sx={{ p: 3, width: 260 }}>
+			<Typography mb={1} component="div" variant="h6">
+				Login
+			</Typography>
+			<TextField
+				label="Email"
+				variant="filled"
+				margin="dense"
+				fullWidth
+				onChange={(e) => handleEmailChange(e.target.value)}
+				value={email}
+			/>
+			<FormControl variant="filled" fullWidth margin="dense">
+				<InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+				<FilledInput
+					type={showPassword ? "text" : "password"}
+					value={password}
+					onChange={(e) => handlePasswordChange(e.target.value)}
+					endAdornment={
+						<InputAdornment position="end">
+							<IconButton onClick={handleShowPassword} edge="end">
+								{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+							</IconButton>
+						</InputAdornment>
+					}
 				/>
-				<FormControl variant="filled" fullWidth margin="dense">
-					<InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-					<FilledInput
-						type={showPassword ? "text" : "password"}
-						value={password}
-						onChange={(e) => handlePasswordChange(e.target.value)}
-						endAdornment={
-							<InputAdornment position="end">
-								<IconButton onClick={handleShowPassword} edge="end">
-									{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-								</IconButton>
-							</InputAdornment>
-						}
-					/>
-				</FormControl>
-				{err ? (
-					<div>
-						<Alert severity="error" sx={{ mt: 1 }}>
-							Wrong password or email. Please re-check your credentials!
-						</Alert>
-					</div>
-				) : (
-					<div></div>
-				)}
-				<Button
-					sx={{ mt: 1 }}
-					color="primary"
-					variant="contained"
-					onClick={handleSubmit}
-					size="large"
-				>
-					Login
-				</Button>
-			</Paper>
-		</Container>
+			</FormControl>
+			{err ? (
+				<div>
+					<Alert severity="error" sx={{ mt: 1 }}>
+						Wrong password or email. Please re-check your credentials!
+					</Alert>
+				</div>
+			) : (
+				<div></div>
+			)}
+			<Button
+				sx={{ mt: 1 }}
+				color="primary"
+				variant="contained"
+				onClick={handleSubmit}
+				size="large"
+			>
+				Login
+			</Button>
+		</Paper>
 	);
 }
 

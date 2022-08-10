@@ -48,6 +48,7 @@ function AdminPendingUserTable() {
 							size="small"
 							onChange={(e) => handleSearchText(e.target.value)}
 							value={tempSearch}
+							autoComplete="new-password"
 						/>
 					</Grid>
 					<Grid item xs={4}>

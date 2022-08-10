@@ -1,21 +1,10 @@
 import React from "react";
 import { Container, Button, Modal, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-
-const style = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: 400,
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: 24,
-	p: 4,
-};
+import UserDetailsEdit from "./UserDetailsEdit";
 
 function UserDetails() {
-	const [modalOpen, setModalOpen] = useState(false);
+	
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [accountType, setAccountType] = useState("");
@@ -27,12 +16,7 @@ function UserDetails() {
 		//TODO: Make API Call Here.
 	}, [firstName, lastName, id, email, mobile]);
 
-	const handleOpen = () => {
-		setModalOpen(true);
-	};
-	const handleClose = () => {
-		setModalOpen(false);
-	};
+	
 
 	return (
 		<div>
@@ -51,10 +35,7 @@ function UserDetails() {
 				<div>{mobile}</div>
 			</Typography>
 
-			<Button onClick={handleOpen}>Edit Details</Button>
-			<Modal open={modalOpen} onClose={handleClose}>
-				<Box sx={style}></Box>
-			</Modal>
+			<UserDetailsEdit />
 		</div>
 	);
 }

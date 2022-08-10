@@ -85,143 +85,141 @@ function RegisterForm() {
 	//TODO: Cleanup and Finish Register layout
 
 	return (
-		<Container>
-			<Paper sx={{ p: 3, width: 600 }}>
-				<Typography mb={1} component="div" variant="h6">
-					Registration Form
-				</Typography>
-				<TextField
-					label="Email"
-					variant="filled"
-					margin="dense"
-					fullWidth
-					disabled
-				/>
-				<Grid container spacing={2}>
-					<Grid item xs={6}>
-						<TextField
-							label="First name"
-							variant="filled"
-							margin="dense"
-							onChange={(e) => handleFirstNameChange(e.target.value)}
-							fullWidth
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						<TextField
-							label="Last name"
-							variant="filled"
-							margin="dense"
-							onChange={(e) => handleLastNameChange(e.target.value)}
-							fullWidth
-						/>
-					</Grid>
+		<Paper sx={{ p: 3, width: 600 }}>
+			<Typography mb={1} component="div" variant="h6">
+				Registration Form
+			</Typography>
+			<TextField
+				label="Email"
+				variant="filled"
+				margin="dense"
+				fullWidth
+				disabled
+			/>
+			<Grid container spacing={2}>
+				<Grid item xs={6}>
+					<TextField
+						label="First name"
+						variant="filled"
+						margin="dense"
+						onChange={(e) => handleFirstNameChange(e.target.value)}
+						fullWidth
+					/>
 				</Grid>
-				<Grid container spacing={2}>
-					<Grid item xs={6}>
-						<TextField
-							label="Mobile"
-							variant="filled"
-							margin="dense"
-							onChange={(e) => handleMobileChange(e.target.value)}
-							fullWidth
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						<TextField
-							variant="filled"
-							margin="dense"
-							label="Date of Birth"
-							type="date"
-							fullWidth
-							onChange={(e) => handleDobChange(e.target.value)}
-							InputLabelProps={{
-								shrink: true,
+				<Grid item xs={6}>
+					<TextField
+						label="Last name"
+						variant="filled"
+						margin="dense"
+						onChange={(e) => handleLastNameChange(e.target.value)}
+						fullWidth
+					/>
+				</Grid>
+			</Grid>
+			<Grid container spacing={2}>
+				<Grid item xs={6}>
+					<TextField
+						label="Mobile"
+						variant="filled"
+						margin="dense"
+						onChange={(e) => handleMobileChange(e.target.value)}
+						fullWidth
+					/>
+				</Grid>
+				<Grid item xs={6}>
+					<TextField
+						variant="filled"
+						margin="dense"
+						label="Date of Birth"
+						type="date"
+						fullWidth
+						onChange={(e) => handleDobChange(e.target.value)}
+						InputLabelProps={{
+							shrink: true,
+						}}
+					/>
+				</Grid>
+			</Grid>
+			<Grid container spacing={2}>
+				<Grid item xs={6}>
+					<FormControl variant="filled" fullWidth margin="dense">
+						<InputLabel>Password</InputLabel>
+						<FilledInput
+							type={showPassword ? "text" : "password"}
+							value={password}
+							onFocus={(e) => {
+								handlePasswordFocus(true);
+								setAnchorEl(e.target);
 							}}
+							onBlur={() => handlePasswordFocus(false)}
+							onChange={(e) => handlePasswordChange(e.target.value)}
+							endAdornment={
+								<InputAdornment position="end">
+									<IconButton onClick={handleShowPassword} edge="end">
+										{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+									</IconButton>
+								</InputAdornment>
+							}
 						/>
-					</Grid>
+					</FormControl>
+					<Popper
+						open={passwordFocus}
+						anchorEl={anchorEl}
+						placement="left"
+						transition
+					>
+						{({ TransitionProps }) => (
+							<Fade {...TransitionProps} timeout={350}>
+								<Paper>
+									<Typography sx={{ p: 1, m: 1 }} type="body2">
+										Minimum 8 characters <br />
+										At least 1 uppercase letter <br />
+										1 lowercase letter <br />
+										1 number <br />1 special character
+									</Typography>
+								</Paper>
+							</Fade>
+						)}
+					</Popper>
 				</Grid>
-				<Grid container spacing={2}>
-					<Grid item xs={6}>
-						<FormControl variant="filled" fullWidth margin="dense">
-							<InputLabel>Password</InputLabel>
-							<FilledInput
-								type={showPassword ? "text" : "password"}
-								value={password}
-								onFocus={(e) => {
-									handlePasswordFocus(true);
-									setAnchorEl(e.target);
-								}}
-								onBlur={() => handlePasswordFocus(false)}
-								onChange={(e) => handlePasswordChange(e.target.value)}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton onClick={handleShowPassword} edge="end">
-											{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-										</IconButton>
-									</InputAdornment>
-								}
-							/>
-						</FormControl>
-						<Popper
-							open={passwordFocus}
-							anchorEl={anchorEl}
-							placement="left"
-							transition
-						>
-							{({ TransitionProps }) => (
-								<Fade {...TransitionProps} timeout={350}>
-									<Paper>
-										<Typography sx={{ p: 1, m: 1 }} type="body2">
-											Minimum 8 characters <br />
-											At least 1 uppercase letter <br />
-											1 lowercase letter <br />
-											1 number <br />1 special character
-										</Typography>
-									</Paper>
-								</Fade>
-							)}
-						</Popper>
-					</Grid>
-					<Grid item xs={6}>
-						<FormControl variant="filled" fullWidth margin="dense">
-							<InputLabel>ReType-Password</InputLabel>
-							<FilledInput
-								type={showPassword ? "text" : "password"}
-								value={matchPassword}
-								onChange={(e) => handleMatchPasswordChange(e.target.value)}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton onClick={handleShowPassword} edge="end">
-											{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-										</IconButton>
-									</InputAdornment>
-								}
-							/>
-						</FormControl>
-					</Grid>
+				<Grid item xs={6}>
+					<FormControl variant="filled" fullWidth margin="dense">
+						<InputLabel>ReType-Password</InputLabel>
+						<FilledInput
+							type={showPassword ? "text" : "password"}
+							value={matchPassword}
+							onChange={(e) => handleMatchPasswordChange(e.target.value)}
+							endAdornment={
+								<InputAdornment position="end">
+									<IconButton onClick={handleShowPassword} edge="end">
+										{showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+									</IconButton>
+								</InputAdornment>
+							}
+						/>
+					</FormControl>
 				</Grid>
+			</Grid>
 
-				{err ? (
-					<div>
-						<Alert severity="error" sx={{ mt: 1 }}>
-							Wrong password or email. Please re-check your credentials!
-						</Alert>
-					</div>
-				) : (
-					<div></div>
-				)}
-				<Button
-					sx={{ mt: 1 }}
-					color="primary"
-					variant="contained"
-					onClick={handleSubmit}
-					size="large"
-				>
-					Login
-				</Button>
-			</Paper>
-		</Container>
+			{err ? (
+				<div>
+					<Alert severity="error" sx={{ mt: 1 }}>
+						Wrong password or email. Please re-check your credentials!
+					</Alert>
+				</div>
+			) : (
+				<div></div>
+			)}
+			<Button
+				sx={{ mt: 1 }}
+				color="primary"
+				variant="contained"
+				onClick={handleSubmit}
+				size="large"
+			>
+				Login
+			</Button>
+		</Paper>
 	);
 }
 
